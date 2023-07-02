@@ -1,4 +1,6 @@
 # импорты
+import random
+
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.utils import get_random_id
@@ -45,30 +47,39 @@ class BotInterface():
                     self.res = check_user(engine=create_engine(db_url_object), profile_id=self.params["id"],
                                           worksheet_id=user["id"])
 
-                    # while self.res is True:
-                    #     print(1)
-                    # else:
-                    #     print(2)
-                    if self.res == True:
-                        # VkTools.get_profile_info(self=self, user_id=264654654)
-                        VkTools.search_users(params=VkTools.get_profile_info(self, user_id=264654654))
-                        bot.event_handler()
+                    while self.res == True:
+                        user1 = users.pop()
+                        photos_user = self.api.get_photos(user1['id'])
+
+                        attachment = ''
+                        for num, photo in enumerate(photos_user):
+                            attachment += f'photo{photo["owner_id"]}_{photo["id"]}'
+                            if num == 2:
+                                break
+                        self.message_send(event.user_id,
+                                          f'Встречайте! {user1["name"]}, ссылка: vk.com/id{user1["id"]}',
+                                          attachment=attachment
+                                          )
+                        add_user(engine=create_engine(db_url_object), profile_id=self.params["id"],
+                                 worksheet_id=user1["id"])
+                        print(1)
+                        break
+                    #     self.event_handler()
                     else:
-                        pass
+                        photos_user = self.api.get_photos(user['id'])
 
-                    photos_user = self.api.get_photos(user['id'])
-
-                    attachment = ''
-                    for num, photo in enumerate(photos_user):
-                        attachment += f'photo{photo["owner_id"]}_{photo["id"]}'
-                        if num == 2:
-                            break
-                    self.message_send(event.user_id,
-                                      f'Встречайте! {user["name"]}, ссылка: vk.com/id{user["id"]}',
-                                      attachment=attachment
-                                      )
-                    # здесь логика для добавленяи в бд
-                    add_user(engine=create_engine(db_url_object), profile_id=self.params["id"], worksheet_id=user["id"])
+                        attachment = ''
+                        for num, photo in enumerate(photos_user):
+                            attachment += f'photo{photo["owner_id"]}_{photo["id"]}'
+                            if num == 2:
+                                break
+                        self.message_send(event.user_id,
+                                          f'Встречайте! {user["name"]}, ссылка: vk.com/id{user["id"]}',
+                                          attachment=attachment
+                                          )
+                        # здесь логика для добавленяи в бд
+                        add_user(engine=create_engine(db_url_object), profile_id=self.params["id"],
+                                 worksheet_id=user["id"])
                 elif command == 'пока':
                     self.message_send(event.user_id, 'Пока')
                 else:
