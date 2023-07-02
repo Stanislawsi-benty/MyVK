@@ -50,9 +50,11 @@ class BotInterface():
                     # else:
                     #     print(2)
                     if self.res == True:
-                        BotInterface.event_handler(self)
+                        # VkTools.get_profile_info(self=self, user_id=264654654)
+                        VkTools.search_users(params=VkTools.get_profile_info(self, user_id=264654654))
+                        bot.event_handler()
                     else:
-                        continue
+                        pass
 
                     photos_user = self.api.get_photos(user['id'])
 
