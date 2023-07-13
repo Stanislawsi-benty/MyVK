@@ -39,14 +39,14 @@ def check_user(engine, profile_id, worksheet_id):
 
 def delete_users(engine):
     with Session(engine) as session:
-        del_bd = session.query(Viewed).delete()
-        session.add(del_bd)
+        session.query(Viewed).delete()
         session.commit()
+
 
 if __name__ == '__main__':
     engine = create_engine(db_url_object)
     Base.metadata.create_all(engine)
-    add_user(engine, profile_id=1231, worksheet_id=151351)
-    res = check_user(engine, 1231, 15135331)
-    print(res)
-    # delete_users(engine)
+    # add_user(engine, profile_id=1231, worksheet_id=151351)
+    # res = check_user(engine, 1231, 15135331)
+    # print(res)
+    delete_users(engine)
